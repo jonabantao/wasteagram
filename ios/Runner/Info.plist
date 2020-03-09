@@ -2,6 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Needed to upload photos on post creation</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Needed to take pictures on post creation</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Needed to record videos on post creation</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Needed to access location on post creation</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Needed to access location on post creation</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
