@@ -19,7 +19,22 @@ class _WasteNewEntryScreenState extends State<WasteNewEntryScreen> {
         title: Text('Wasteagram'),
         centerTitle: true,
       ),
-      body: Image.file(args.image),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Image.file(args.image),
+              TextFormField(
+                keyboardType: TextInputType.number,
+              ),
+              RaisedButton(
+                onPressed: null,
+                child: Text('Upload'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
