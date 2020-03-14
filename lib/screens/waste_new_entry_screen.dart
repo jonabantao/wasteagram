@@ -7,7 +7,7 @@ import 'package:wasteagram/models/post.dart';
 import 'package:wasteagram/util/collection.dart';
 import 'package:wasteagram/util/geopoint_util.dart';
 import 'package:wasteagram/widgets/number_form_field.dart';
-import 'package:wasteagram/widgets/post_scroll_view.dart';
+import 'package:wasteagram/widgets/upload_button.dart';
 import 'package:wasteagram/widgets/wasteagram_app_bar.dart';
 
 class WasteNewEntryScreen extends StatefulWidget {
@@ -73,43 +73,40 @@ class _WasteNewEntryScreenState extends State<WasteNewEntryScreen> {
 
     return Scaffold(
       appBar: WasteagramAppBar(),
-      body: PostScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              Image.file(
-                image,
-                width: MediaQuery.of(context).size.height * 0.4,
-                height: MediaQuery.of(context).size.height * 0.4,
-                fit: BoxFit.cover,
-              ),
-              const SizedBox(height: 24.0),
-              NumberFormField(
-                validator: _validateNumberField,
-                onSaved: _saveNumberField,
-              ),
-              const SizedBox(height: 48.0),
-              ButtonTheme(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.0,
-                  horizontal: MediaQuery.of(context).size.width / 3,
-                ),
-                child: RaisedButton(
-                  child: Icon(
-                    Icons.cloud_upload,
-                    size: 32.0,
-                    color: Theme.of(context).buttonColor,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 24.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                Semantics(
+                  image: true,
+                  label: 'Pictures of wasted items',
+                  child: Image.file(
+                    image,
+                    width: MediaQuery.of(context).size.height * 0.35,
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    fit: BoxFit.cover,
                   ),
-                  onPressed: () async {
-                    await _savePost(context, image);
+                ),
+                const SizedBox(height: 24.0),
+                NumberFormField(
+                  validator: _validateNumberField,
+                  onSaved: _saveNumberField,
+                ),
+                const Spacer(),
+                UploadButton(
+                  onPressed: () {
+                    _savePost(context, image);
                   },
                 ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

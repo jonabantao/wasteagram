@@ -10,32 +10,37 @@ class NumberFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Text(
-            'NUMBER OF ITEMS',
-            style: Theme.of(context).textTheme.headline,
-          ),
-          SizedBox(height: 8.0),
-          SizedBox(
-            width: 200.0,
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              // https://stackoverflow.com/questions/49577781/how-to-create-number-input-field-in-flutter
-              inputFormatters: <TextInputFormatter>[
-                WhitelistingTextInputFormatter.digitsOnly,
-              ],
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-              ),
+    return Semantics(
+      textField: true,
+      enabled: true,
+      label: 'Number of wasted items',
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Text(
+              'NUMBER OF ITEMS',
               style: Theme.of(context).textTheme.headline,
-              textAlign: TextAlign.center,
-              validator: validator,
-              onSaved: onSaved,
             ),
-          ),
-        ],
+            SizedBox(height: 8.0),
+            SizedBox(
+              width: 200.0,
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                // https://stackoverflow.com/questions/49577781/how-to-create-number-input-field-in-flutter
+                inputFormatters: <TextInputFormatter>[
+                  WhitelistingTextInputFormatter.digitsOnly,
+                ],
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                style: Theme.of(context).textTheme.headline,
+                textAlign: TextAlign.center,
+                validator: validator,
+                onSaved: onSaved,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

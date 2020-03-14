@@ -29,11 +29,15 @@ class WasteDetailViewScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.headline,
               ),
               const SizedBox(height: 16.0),
-              Image.network(
-                post.imageURL,
-                width: MediaQuery.of(context).size.height * 0.4,
-                height: MediaQuery.of(context).size.height * 0.4,
-                fit: BoxFit.cover,
+              Semantics(
+                image: true,
+                label: 'Picture of wasted items',
+                child: Image.network(
+                  post.imageURL,
+                  width: MediaQuery.of(context).size.height * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  fit: BoxFit.cover,
+                ),
               ),
               const SizedBox(height: 16.0),
               Text(
@@ -41,9 +45,12 @@ class WasteDetailViewScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.display1,
               ),
               const SizedBox(height: 24.0),
-              Text(
-                '(${post.longitude}, ${post.latitude})',
-                style: Theme.of(context).textTheme.subhead,
+              Semantics(
+                label: 'Coordinates of post',
+                child: Text(
+                  '(${post.longitude}, ${post.latitude})',
+                  style: Theme.of(context).textTheme.subhead,
+                ),
               ),
             ],
           ),
