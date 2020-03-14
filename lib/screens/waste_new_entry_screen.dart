@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+import 'package:wasteagram/util/geopoint_util.dart';
+import 'package:wasteagram/widgets/wasteagram_app_bar.dart';
 
 class WasteNewEntryScreen extends StatefulWidget {
   static const route = 'waste-new';
@@ -29,42 +32,59 @@ class _WasteNewEntryScreenState extends State<WasteNewEntryScreen> {
       return null;
     }
 
+    _uploadImage(File image) async {
+      StorageReference ref =
+          FirebaseStorage.instance.ref().child(basename(image.path) + DateTime.now().toString());
+      StorageUploadTask uploadTask = ref.putFile(image);
+
+      await uploadTask.onComplete;
+
+      return ref.getDownloadURL();
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Wasteagram'),
-        centerTitle: true,
-      ),
+      appBar: WasteagramAppBar(),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                Image.file(args.image),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  // https://stackoverflow.com/questions/49577781/how-to-create-number-input-field-in-flutter
-                  inputFormatters: <TextInputFormatter>[
-                    WhitelistingTextInputFormatter.digitsOnly,
-                  ],
-                  validator: _validateNumberField,
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    if (!_formKey.currentState.validate()) return;
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  Image.file(
+                    args.image,
+                    width: MediaQuery.of(context).size.height * 0.4,
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    fit: BoxFit.cover,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    // https://stackoverflow.com/questions/49577781/how-to-create-number-input-field-in-flutter
+                    inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly,
+                    ],
+                    validator: _validateNumberField,
+                  ),
+                  RaisedButton(
+                    onPressed: () async {
+                      if (!_formKey.currentState.validate()) return;
 
-                    StorageReference ref = FirebaseStorage.instance.ref().child(basename(args.image.path));
-                    StorageUploadTask uploadTask = ref.putFile(args.image);
+                      final url = await _uploadImage(args.image);
+                      final location = await getCurrentLocation();
 
-                    await uploadTask.onComplete;
-
-                    final url = await ref.getDownloadURL();
-
-                    print(url);
-                  },
-                  child: Text('Upload'),
-                ),
-              ],
+                      Firestore.instance.collection('posts').add({
+                        'imageUrl': url,
+                        'date': DateTime.now(),
+                        'geolocation': location,
+                        'quantity': 3,
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text('Upload'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
