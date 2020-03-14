@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 class ListTileWasteCountCircle extends StatelessWidget {
   final count;
 
-  ListTileWasteCountCircle({@required this.count}) : assert(count != null);
+  const ListTileWasteCountCircle({Key key, @required this.count})
+      : assert(count != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

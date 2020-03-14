@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:wasteagram/screens/waste_new_entry_screen.dart';
 
 class FloatingCameraButton extends StatelessWidget {
+  const FloatingCameraButton({Key key}) : super(key: key);
+
   void _getImage(context) async {
     final File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (image == null) return;
@@ -23,7 +25,7 @@ class FloatingCameraButton extends StatelessWidget {
           _getImage(context);
         },
         tooltip: 'Take Picture',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       button: true,
       enabled: true,

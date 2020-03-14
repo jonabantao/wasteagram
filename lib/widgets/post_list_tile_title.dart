@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:wasteagram/util/date_util.dart';
 
 class PostListTileTitle extends StatelessWidget {
   final DateTime date;
 
-  PostListTileTitle({@required this.date});
+  const PostListTileTitle({Key key, @required this.date})
+      : assert(date != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        DateFormat('EEEE, MMM. d').format(date),
+        printListTileDate(date),
         style: Theme.of(context).textTheme.title,
       ),
     );

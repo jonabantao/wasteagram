@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 
 class WasteagramAppBar extends StatelessWidget with PreferredSizeWidget {
-  final count;
+  final title;
 
-  WasteagramAppBar({this.count});
+  WasteagramAppBar() : title = WasteagramAppBar.appTitle;
 
-  static const title = 'Wasteagram';
+  WasteagramAppBar.withCount(int count)
+      : assert(count != null),
+        title = WasteagramAppBar.appTitle + ' - $count';
+
+  static const appTitle = 'Wasteagram';
 
   @override
   Widget build(BuildContext context) {
-    final titleCount = (count == null) ? '' : ' - $count';
-
     return AppBar(
-      title: Text(WasteagramAppBar.title + titleCount),
+      title: Text(title),
       centerTitle: true,
     );
   }

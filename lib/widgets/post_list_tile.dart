@@ -7,7 +7,9 @@ import 'package:wasteagram/widgets/post_list_tile_title.dart';
 class PostListTile extends StatelessWidget {
   final Post post;
 
-  PostListTile({@required this.post}) : assert(post != null);
+  const PostListTile({Key key, @required this.post})
+      : assert(post != null),
+        super(key: key);
 
   _navigateToDetailsView(context, post) {
     Navigator.pushNamed(

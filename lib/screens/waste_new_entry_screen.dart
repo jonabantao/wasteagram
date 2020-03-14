@@ -2,9 +2,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+import 'package:wasteagram/models/post.dart';
+import 'package:wasteagram/util/collection.dart';
 import 'package:wasteagram/util/geopoint_util.dart';
+import 'package:wasteagram/widgets/number_form_field.dart';
+import 'package:wasteagram/widgets/post_scroll_view.dart';
 import 'package:wasteagram/widgets/wasteagram_app_bar.dart';
 
 class WasteNewEntryScreen extends StatefulWidget {
@@ -16,6 +19,7 @@ class WasteNewEntryScreen extends StatefulWidget {
 
 class _WasteNewEntryScreenState extends State<WasteNewEntryScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _post = Post();
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +36,14 @@ class _WasteNewEntryScreenState extends State<WasteNewEntryScreen> {
       return null;
     }
 
+    void _saveNumberField(value) {
+      _post.quantity = int.parse(value);
+    }
+
     _uploadImage(File image) async {
-      StorageReference ref =
-          FirebaseStorage.instance.ref().child(basename(image.path) + DateTime.now().toString());
+      StorageReference ref = FirebaseStorage.instance
+          .ref()
+          .child(basename(image.path) + DateTime.now().toString());
       StorageUploadTask uploadTask = ref.putFile(image);
 
       await uploadTask.onComplete;
@@ -44,48 +53,41 @@ class _WasteNewEntryScreenState extends State<WasteNewEntryScreen> {
 
     return Scaffold(
       appBar: WasteagramAppBar(),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  Image.file(
-                    args.image,
-                    width: MediaQuery.of(context).size.height * 0.4,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    fit: BoxFit.cover,
-                  ),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    // https://stackoverflow.com/questions/49577781/how-to-create-number-input-field-in-flutter
-                    inputFormatters: <TextInputFormatter>[
-                      WhitelistingTextInputFormatter.digitsOnly,
-                    ],
-                    validator: _validateNumberField,
-                  ),
-                  RaisedButton(
-                    onPressed: () async {
-                      if (!_formKey.currentState.validate()) return;
-
-                      final url = await _uploadImage(args.image);
-                      final location = await getCurrentLocation();
-
-                      Firestore.instance.collection('posts').add({
-                        'imageUrl': url,
-                        'date': DateTime.now(),
-                        'geolocation': location,
-                        'quantity': 3,
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text('Upload'),
-                  ),
-                ],
+      body: PostScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              Image.file(
+                args.image,
+                width: MediaQuery.of(context).size.height * 0.4,
+                height: MediaQuery.of(context).size.height * 0.4,
+                fit: BoxFit.cover,
               ),
-            ),
+              NumberFormField(
+                validator: _validateNumberField,
+                onSaved: _saveNumberField,
+              ),
+              RaisedButton.icon(
+                icon: const Icon(Icons.cloud_upload),
+                label: const Text('Upload'),
+                onPressed: () async {
+                  if (!_formKey.currentState.validate()) return;
+
+                  _formKey.currentState.save();
+
+                  _post.date = DateTime.now();
+                  _post.geolocation = await getCurrentLocation();
+                  _post.imageURL = await _uploadImage(args.image);
+
+                  Firestore.instance
+                      .collection(Collection.posts)
+                      .add(_post.createMapForFirestore());
+
+                  Navigator.pop(context);
+                },
+              ),
+            ],
           ),
         ),
       ),
