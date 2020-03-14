@@ -12,7 +12,7 @@ class PostListTileTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        printListTileDate(date),
+        displayListTileDate(date),
         style: Theme.of(context).textTheme.title,
       ),
     );

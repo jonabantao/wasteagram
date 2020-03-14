@@ -21,35 +21,55 @@ class _WasteNewEntryScreenState extends State<WasteNewEntryScreen> {
   final _formKey = GlobalKey<FormState>();
   final _post = Post();
 
-  @override
-  Widget build(BuildContext context) {
+  File _getImage(BuildContext context) {
     final WasteNewEntryScreenArguments args =
         ModalRoute.of(context).settings.arguments;
 
-    String _validateNumberField(value) {
-      if (value.isEmpty) {
-        return 'Please enter a number.';
-      } else if (int.parse(value) < 1) {
-        return 'Number can\'t be zero or negative';
-      }
+    return args.image;
+  }
 
-      return null;
+  String _validateNumberField(value) {
+    if (value.isEmpty) {
+      return 'Please enter a number.';
+    } else if (int.parse(value) < 1) {
+      return 'Number can\'t be zero or negative';
     }
 
-    void _saveNumberField(value) {
-      _post.quantity = int.parse(value);
-    }
+    return null;
+  }
 
-    _uploadImage(File image) async {
-      StorageReference ref = FirebaseStorage.instance
-          .ref()
-          .child(basename(image.path) + DateTime.now().toString());
-      StorageUploadTask uploadTask = ref.putFile(image);
+  _saveNumberField(value) {
+    _post.quantity = int.parse(value);
+  }
 
-      await uploadTask.onComplete;
+  _uploadImage(File image) async {
+    StorageReference ref = FirebaseStorage.instance
+        .ref()
+        .child(DateTime.now().toString() + basename(image.path));
+    StorageUploadTask uploadTask = ref.putFile(image);
 
-      return ref.getDownloadURL();
-    }
+    await uploadTask.onComplete;
+
+    return ref.getDownloadURL();
+  }
+
+  _savePost(BuildContext context, File image) async {
+    if (!_formKey.currentState.validate()) return;
+
+    _formKey.currentState.save();
+
+    _post.date = DateTime.now();
+    _post.geolocation = await getCurrentLocation();
+    _post.imageURL = await _uploadImage(image);
+
+    Firestore.instance.collection(Collection.posts).add(_post.toMap());
+
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    File image = _getImage(context);
 
     return Scaffold(
       appBar: WasteagramAppBar(),
@@ -59,34 +79,33 @@ class _WasteNewEntryScreenState extends State<WasteNewEntryScreen> {
           child: Column(
             children: <Widget>[
               Image.file(
-                args.image,
+                image,
                 width: MediaQuery.of(context).size.height * 0.4,
                 height: MediaQuery.of(context).size.height * 0.4,
                 fit: BoxFit.cover,
               ),
+              const SizedBox(height: 24.0),
               NumberFormField(
                 validator: _validateNumberField,
                 onSaved: _saveNumberField,
               ),
-              RaisedButton.icon(
-                icon: const Icon(Icons.cloud_upload),
-                label: const Text('Upload'),
-                onPressed: () async {
-                  if (!_formKey.currentState.validate()) return;
-
-                  _formKey.currentState.save();
-
-                  _post.date = DateTime.now();
-                  _post.geolocation = await getCurrentLocation();
-                  _post.imageURL = await _uploadImage(args.image);
-
-                  Firestore.instance
-                      .collection(Collection.posts)
-                      .add(_post.createMapForFirestore());
-
-                  Navigator.pop(context);
-                },
-              ),
+              const SizedBox(height: 48.0),
+              ButtonTheme(
+                padding: EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: MediaQuery.of(context).size.width / 3,
+                ),
+                child: RaisedButton(
+                  child: Icon(
+                    Icons.cloud_upload,
+                    size: 32.0,
+                    color: Theme.of(context).buttonColor,
+                  ),
+                  onPressed: () async {
+                    await _savePost(context, image);
+                  },
+                ),
+              )
             ],
           ),
         ),

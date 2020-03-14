@@ -1,9 +1,9 @@
 import 'package:intl/intl.dart';
 
-String printDetailTitleDate(DateTime date) {
+String displayDetailTitleDate(DateTime date) {
   return DateFormat('EEEE, MMM. d y').format(date);
 }
 
-String printListTileDate(DateTime date) {
+String displayListTileDate(DateTime date) {
   return DateFormat('EEEE, MMM. d').format(date);
 }

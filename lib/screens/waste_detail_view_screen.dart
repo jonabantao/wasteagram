@@ -25,7 +25,7 @@ class WasteDetailViewScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text(
-                printDetailTitleDate(post.date),
+                displayDetailTitleDate(post.date),
                 style: Theme.of(context).textTheme.headline,
               ),
               const SizedBox(height: 16.0),

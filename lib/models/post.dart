@@ -23,7 +23,12 @@ class Post {
   double get latitude => this.geolocation.latitude;
   double get longitude => this.geolocation.longitude;
 
-  Map<String, dynamic> createMapForFirestore() {
+  Map<String, dynamic> toMap() {
+    assert(date != null);
+    assert(imageURL != null);
+    assert(geolocation != null);
+    assert(quantity != null);
+
     return {
       'date': this.date,
       'imageURL': this.imageURL,
