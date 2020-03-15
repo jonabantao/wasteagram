@@ -15,7 +15,7 @@ class WasteListViewScreen extends StatelessWidget {
           .orderBy('date', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data.documents.length > 0) {
+        if (snapshot.hasData && snapshot.data.documents.isNotEmpty) {
           return ListViewScaffold(posts: snapshot.data.documents);
         } else {
           return const LoadingScaffold();

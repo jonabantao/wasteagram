@@ -36,4 +36,14 @@ class Post {
       'quantity': this.quantity,
     };
   }
+
+  Map<String, dynamic> toLog() {
+    assert(date != null);
+    assert(quantity != null);
+
+    return {
+      'date': this.date.toString(),
+      'quantity': this.quantity,
+    };
+  }
 }

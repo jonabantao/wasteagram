@@ -6,6 +6,7 @@ import 'package:path/path.dart';
 import 'package:wasteagram/models/post.dart';
 import 'package:wasteagram/util/collection.dart';
 import 'package:wasteagram/util/geopoint_util.dart';
+import 'package:wasteagram/widgets/analytics_provider.dart';
 import 'package:wasteagram/widgets/number_form_field.dart';
 import 'package:wasteagram/widgets/upload_button.dart';
 import 'package:wasteagram/widgets/wasteagram_app_bar.dart';
@@ -63,8 +64,15 @@ class _WasteNewEntryScreenState extends State<WasteNewEntryScreen> {
     _post.imageURL = await _uploadImage(image);
 
     Firestore.instance.collection(Collection.posts).add(_post.toMap());
+    _logCreatePost(context, _post);
 
     Navigator.pop(context);
+  }
+
+  _logCreatePost(BuildContext context, Post post) {
+    AnalyticsProvider.of(context)
+      .analytics
+      .logEvent(name: 'post_create', parameters: _post.toLog());
   }
 
   @override
