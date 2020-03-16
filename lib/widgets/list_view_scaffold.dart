@@ -24,7 +24,10 @@ class ListViewScaffold extends StatelessWidget {
       appBar: WasteagramAppBar.withCount(count),
       body: ListView.separated(
         itemBuilder: (context, index) {
-          return PostListTile(post: Post.fromFirestore(posts[index]));
+          return PostListTile(
+            key: Key(posts[index].documentID),
+            post: Post.fromFirestore(posts[index]),
+          );
         },
         separatorBuilder: (context, index) => const Divider(thickness: 1.5),
         itemCount: posts.length,

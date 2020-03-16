@@ -26,6 +26,7 @@ class WasteDetailViewScreen extends StatelessWidget {
             children: <Widget>[
               Text(
                 displayDetailTitleDate(post.date),
+                key: Key('detailsDate'),
                 style: Theme.of(context).textTheme.headline,
               ),
               const SizedBox(height: 16.0),
@@ -34,6 +35,7 @@ class WasteDetailViewScreen extends StatelessWidget {
                 label: 'Picture of wasted items',
                 child: Image.network(
                   post.imageURL,
+                  key: Key('detailsImage'),
                   width: MediaQuery.of(context).size.height * 0.4,
                   height: MediaQuery.of(context).size.height * 0.4,
                   fit: BoxFit.cover,
@@ -42,6 +44,7 @@ class WasteDetailViewScreen extends StatelessWidget {
               const SizedBox(height: 16.0),
               Text(
                 'Items: ${post.quantity}',
+                key: Key('detailsQuantity'),
                 style: Theme.of(context).textTheme.display1,
               ),
               const SizedBox(height: 24.0),
@@ -49,6 +52,7 @@ class WasteDetailViewScreen extends StatelessWidget {
                 label: 'Coordinates of post',
                 child: Text(
                   '(${post.longitude}, ${post.latitude})',
+                  key: Key('detailsLocation'),
                   style: Theme.of(context).textTheme.subhead,
                 ),
               ),

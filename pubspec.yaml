@@ -25,7 +25,7 @@ dependencies:
   firebase_auth: 0.15.3
   cloud_firestore: ^0.13.4+1
   cupertino_icons: ^0.1.2
-  intl: ^0.16.1
+  intl: 0.16.0
   location: ^2.5.3
   image_picker: ^0.6.3+4
   path: ^1.6.4
@@ -37,7 +37,9 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test:
+  flutter_driver:
+    sdk: flutter
+  test: any
 
 flutter:
   uses-material-design: true
